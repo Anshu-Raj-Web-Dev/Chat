@@ -179,11 +179,12 @@ const ChatContainer = () => {
                 style={{ opacity: showDropdown === message._id ? 1 : 0, transform: showDropdown === message._id ? "translateY(0)" : "translateY(10px)" }}
               >
                 <button
-                  onClick={() => handleEdit(message)}
+                  onClick={() => handleCopy(message.text)}
                   className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >
-                  Edit
+                  Copy
                 </button>
+              </div>
                 <button
                   onClick={() => handleDelete(message._id)}
                   className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
