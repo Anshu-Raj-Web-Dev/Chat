@@ -1,0 +1,28 @@
+.sidebar-container{
+    height: 89%;
+    margin-top: 70px;
+    width: 18.5%;
+    border-radius: 30px;
+    margin-left: 20px;
+}
+.user{
+    background-color: rgb(255, 255, 255);
+}
+.user-selected{
+    background-color: rgb(208, 208, 208);
+}
+.user:hover{
+    background-color: rgb(208, 208, 208);
+}
+.search-input{
+    border-radius: 40px;
+    padding: 0.5rem;
+    width: 100%;
+    border: none;
+    background-color: rgb(235, 235, 235);
+    padding: 10px 30px; 
+    gap: 20px;
+}
+.search-input::placeholder{
+    padding-left: 10px;
+}

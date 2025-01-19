@@ -6,6 +6,7 @@ import { useAuthStore } from "./useAuthStore";
 export const useChatStore = create((set, get) => ({
   messages: [],
   users: [],
+  friends: [], 
   selectedUser: null,
   isUsersLoading: false,
   isMessagesLoading: false,
@@ -22,6 +23,7 @@ export const useChatStore = create((set, get) => ({
     }
   },
 
+
   getMessages: async (userId) => {
     set({ isMessagesLoading: true });
     try {
@@ -33,6 +35,7 @@ export const useChatStore = create((set, get) => ({
       set({ isMessagesLoading: false });
     }
   },
+
   sendMessage: async (messageData) => {
     const { selectedUser, messages } = get();
     try {
@@ -65,4 +68,37 @@ export const useChatStore = create((set, get) => ({
   },
 
   setSelectedUser: (selectedUser) => set({ selectedUser }),
+
+  // Add functions for delete, edit, and copy
+  deleteMessage: async (messageId) => {
+    try {
+      await axiosInstance.delete(`/messages/delete/${messageId}`);
+      set((state) => ({
+        messages: state.messages.filter((message) => message._id !== messageId),
+      }));
+      toast.success("Message deleted successfully.");
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
+  },
+
+  updateMessage: async (message) => {
+    try {
+      const res = await axiosInstance.put(`/messages/update/${message._id}`, { text: message.text });
+      set((state) => ({
+        messages: state.messages.map((msg) =>
+          msg._id === message._id ? { ...msg, text: res.data.text, isEdited: true } : msg
+        ),
+      }));
+      toast.success("Message updated successfully.");
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
+  },
+  
+
+  copyMessage: (messageText) => {
+    navigator.clipboard.writeText(messageText);
+    toast.success("Message copied to clipboard.");
+  }
 }));

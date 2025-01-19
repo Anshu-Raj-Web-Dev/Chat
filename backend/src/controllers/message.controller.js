@@ -68,3 +68,60 @@ export const sendMessage = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+
+export const updateMessage = async (req, res) => {
+  try {
+    const { messageId } = req.params;  // Get message ID from URL params
+    const { text } = req.body;  // Get the updated text from the request body
+
+    // Find the message by its ID and update the text
+    const updatedMessage = await Message.findByIdAndUpdate(
+      messageId,
+      { text }, // Update the message text
+      { new: true } // Return the updated message
+    );
+
+    // If the message is not found, return an error
+    if (!updatedMessage) {
+      return res.status(404).json({ error: "Message not found" });
+    }
+
+    // Emit the updated message to other connected users (optional)
+    const receiverSocketId = getReceiverSocketId(updatedMessage.receiverId);
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit('messageUpdated', updatedMessage);
+    }
+
+    res.status(200).json(updatedMessage); // Send the updated message as response
+  } catch (error) {
+    console.error("Error in updateMessage controller:", error.message);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
+export const deleteMessage = async (req, res) => {
+  try {
+    const { messageId } = req.params;  // Get the messageId from URL params
+
+    // Find the message by its ID and delete it
+    const deletedMessage = await Message.findByIdAndDelete(messageId);
+
+    // If the message is not found, return an error
+    if (!deletedMessage) {
+      return res.status(404).json({ error: "Message not found" });
+    }
+
+    // Optionally, emit the delete event to other users
+    const receiverSocketId = getReceiverSocketId(deletedMessage.receiverId);
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit('messageDeleted', deletedMessage);
+    }
+
+    res.status(200).json({ message: "Message deleted successfully", deletedMessage }); // Send success response
+  } catch (error) {
+    console.error("Error in deleteMessage controller:", error.message);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};

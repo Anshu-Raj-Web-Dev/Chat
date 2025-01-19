@@ -1,0 +1,9 @@
+.chat-header {
+    width: 115%;
+    background-color: rgba(255, 255, 255, 0.4); /* Transparent white background */
+    backdrop-filter: blur(10px); /* Blurring the background */
+    -webkit-backdrop-filter: blur(10px); /* For Safari compatibility */
+    border-radius: 0.5rem; /* Rounded corners */
+    border: 1px solid rgba(255, 255, 255, 0.18); /* Light border for the crystal effect */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow */
+}

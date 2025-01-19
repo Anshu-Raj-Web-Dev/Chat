@@ -1,0 +1,34 @@
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+    width: 8px; /* Slightly wider scrollbar */
+}
+
+::-webkit-scrollbar-track {
+    background: transparent; /* Transparent background */
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #b73d3d; /* Red thumb color */
+    border-radius: 20px;
+}
+
+/* Crystal (Frosted Glass) Effect in Chat Container */
+.chat-container {
+    margin: 10px;
+    overflow-x: hidden;
+    overflow-y: scroll; /* Enables vertical scrolling */
+    border-radius: 30px;
+    margin-left: 10px;
+    width: 98%;
+    padding-right: 10px; /* To prevent the content from being hidden behind scrollbar */
+    display: flex;
+    flex-direction: column;
+    
+    /* Crystal/Frosted glass effect */
+    background: rgba(255, 255, 255, 0.2); /* Slight transparent white background */
+    backdrop-filter: blur(10px); /* Blur effect to create the frosted glass look */
+    -webkit-backdrop-filter: blur(10px); /* Safari support */
+    
+    /* Optional: Add some subtle shadow to make it look more elegant */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}

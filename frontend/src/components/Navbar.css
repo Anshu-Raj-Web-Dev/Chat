@@ -1,0 +1,21 @@
+.logout{
+    background-color: none;
+    padding: 12px;
+    transition: all 0.3s ease-in-out;
+    border-radius: 25px;
+    color: black;
+}
+.logout:hover{
+    background-color: rgb(153, 42, 42);
+}
+.profile{
+    color: black;
+    background-color: none;
+    padding: 12px;
+    border-radius: 25px;
+    transition: all 0.3s ease-in-out;
+}
+.profile:hover{
+    background-color: #4D416B;
+    
+}
