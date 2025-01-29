@@ -101,18 +101,7 @@ const ChatContainer = () => {
             className={`chat ${message.senderId === authUser._id ? "chat-end" : "chat-start"} transition-opacity duration-300`}
             ref={messageEndRef}
           >
-            <div className="chat-image avatar group">
-              <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-base-300 transition-transform group-hover:scale-105">
-                <img
-                  src={message.senderId === authUser._id
-                    ? authUser.profilePic || "/avatar.png"
-                    : selectedUser.profilePic || "/avatar.png"
-                  }
-                  alt="profile pic"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </div>
+            
             <div className="mb-1">
               <time className="text-xs opacity-50 ml-1 text-black">
                 {formatMessageTime(message.createdAt)}
