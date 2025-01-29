@@ -95,9 +95,8 @@ const ChatContainer = () => {
     <div className="chat-container flex-1 flex flex-col overflow-auto bg-[#FDFDFD]">
       <style>
         {`
-        @import url('https://fonts.googleapis.com/css2?family=Itim&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Parkinsans:wght@300..800&family=Playwrite+VN:wght@100..400&display=swap');
-        .chat-text {
-          font-family: "Itim", serif;
+          @import url('https://fonts.googleapis.com/css2?family=Itim&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Parkinsans:wght@300..800&family=Playwrite+VN:wght@100..400&display=swap');        .chat-text {
+          font-family: "Montserrat", serif;
           font-weight: 400;
         }
         `}
