@@ -93,6 +93,15 @@ const ChatContainer = () => {
 
   return (
     <div className="chat-container flex-1 flex flex-col overflow-auto bg-[#FDFDFD]">
+      <style>
+        {`
+        @import url('https://fonts.googleapis.com/css2?family=Itim&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Parkinsans:wght@300..800&family=Playwrite+VN:wght@100..400&display=swap');
+        .chat-text {
+          font-family: "Itim", serif;
+          font-weight: 400;
+        }
+        `}
+      </style>
       <ChatHeader />
       <div className="flex-1 overflow-y-auto p-4 space-y-2">
         {messages.map((message) => (
@@ -119,7 +128,7 @@ const ChatContainer = () => {
                   className="sm:max-w-[200px] rounded-md mb-2"
                 />
               )}
-              <p className="whitespace-pre-wrap break-words">
+              <p className="chat-text whitespace-pre-wrap break-words">
                 {message.text}
                 {message.isEdited && (
                   <span className="text-xs text-gray-500"> (edited)</span>
