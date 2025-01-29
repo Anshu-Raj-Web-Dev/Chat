@@ -1,6 +1,10 @@
 .typing-area{
     border-radius: 50px;
     background-color: rgb(236, 236, 236);
+    color: black;
+}
+.typing-area input{
+    color: black;
 }
 .send-btn{
     /* padding: 10px; */
