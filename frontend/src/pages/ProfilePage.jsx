@@ -71,6 +71,28 @@ const ProfilePage = () => {
       setIsSubmitting(false);
     }
   };
+
+  const handleRemoveImage = async () => {
+    setIsSubmitting(true);
+  
+    try {
+      await updateProfile({ profilePic: null });
+  
+      // Reset local state and global store
+      setSelectedImg(null);
+      useAuthStore.setState((state) => ({
+        authUser: { ...state.authUser, profilePic: null },
+      }));
+  
+      toast.success("Profile image removed successfully.");
+    } catch (error) {
+      console.error("Error removing profile image:", error);
+      toast.error("Failed to remove profile image. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+  
   
   
   return (
@@ -92,31 +114,48 @@ const ProfilePage = () => {
 
           {/* avatar upload section */}
           <div className="flex flex-col items-center gap-4">
-            <div className="relative">
-              <img
-                src={selectedImg || authUser.profilePic || "/avatar.png"}
-                alt="Profile"
-                className="size-32 rounded-full object-cover border-4"
-              />
-              <label
-                htmlFor="avatar-upload"
-                className={`absolute bottom-0 right-0 bg-base-content hover:scale-105 p-2 rounded-full cursor-pointer transition-all duration-200 ${isUpdatingProfile ? "animate-pulse pointer-events-none" : ""}`}
-              >
-                <Camera className="w-5 h-5 text-base-200" />
-                <input
-                  type="file"
-                  id="avatar-upload"
-                  className="hidden"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  disabled={isUpdatingProfile}
-                />
-              </label>
-            </div>
-            <p className="text-sm text-zinc-400">
-              {isUpdatingProfile ? "Uploading..." : "Click the camera icon to update your photo"}
-            </p>
-          </div>
+  <div className="relative">
+    <img
+      src={selectedImg || authUser.profilePic || "/avatar.png"}
+      alt="Profile"
+      className="size-32 rounded-full object-cover border-4"
+    />
+    {/* Upload Image Button */}
+    <label
+      htmlFor="avatar-upload"
+      className={`absolute bottom-0 right-0 bg-base-content hover:scale-105 p-2 rounded-full cursor-pointer transition-all duration-200 ${
+        isUpdatingProfile ? "animate-pulse pointer-events-none" : ""
+      }`}
+    >
+      <Camera className="w-5 h-5 text-base-200" />
+      <input
+        type="file"
+        id="avatar-upload"
+        className="hidden"
+        accept="image/*"
+        onChange={handleImageUpload}
+        disabled={isUpdatingProfile}
+      />
+    </label>
+  </div>
+
+  {/* Remove Image Button */}
+  {authUser.profilePic && (
+  <button
+    onClick={handleRemoveImage}
+    className="px-3 py-1 text-xs bg-red-500 text-white rounded-lg disabled:bg-gray-300 transition-all hover:bg-red-700"
+    disabled={isUpdatingProfile}
+  >
+    {isUpdatingProfile ? "Removing..." : "Remove Image"}
+  </button>
+)}
+
+
+  <p className="text-sm text-zinc-400">
+    {isUpdatingProfile ? "Updating..." : "Click the camera icon to update your photo"}
+  </p>
+</div>
+
 
           <div className="space-y-6">
             <div className="space-y-1.5">
