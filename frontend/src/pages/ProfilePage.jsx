@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuthStore } from "../store/useAuthStore";
 import { Camera, Mail, User } from "lucide-react";
+import toast from "react-hot-toast";
 
 const ProfilePage = () => {
   const { authUser, isUpdatingProfile, updateProfile } = useAuthStore();
@@ -42,21 +43,36 @@ const ProfilePage = () => {
     };
   };
 
+  useEffect(() => {
+    setNewName(authUser?.fullName || "");
+  }, [authUser?.fullName]);
+
   const handleNameChange = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-
+  
     try {
-      await updateProfile({ fullName: newName });
+      const res = await updateProfile({ fullName: newName });
+  
+      if (res && res.user) {
+        useAuthStore.setState((state) => ({
+          authUser: { ...state.authUser, ...res.user },
+        }));
+      } else {
+        console.error("Invalid response structure:", res);
+        toast.to("Failed to update name.");
+      }
+  
       console.log("Profile name updated successfully.");
     } catch (error) {
       console.error("Error updating name:", error);
-      alert("Failed to update name. Please try again.");
+      toast.to("Failed to update name. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   };
-
+  
+  
   return (
     <div className="h-screen pt-20 profile-page">
        <style>
@@ -109,22 +125,22 @@ const ProfilePage = () => {
                 Full Name
               </div>
               <form onSubmit={handleNameChange} className="px-4 py-2.5 bg-base-200 rounded-lg border">
-                <input
-                  type="text"
-                  value={newName}
-                  onChange={(e) => setNewName(e.target.value)}
-                  className="w-full bg-base-200 border-none outline-none"
-                  placeholder="Enter new name"
-                />
-                
-              </form>
-              <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="mt-2 px-4 py-2 text-xs bg-blue-600 text-white rounded-lg disabled:bg-gray-300 transition-all hover:bg-blue-800"
-                >
-                  {isSubmitting ? "Updating..." : "Update Name"}
-                </button>
+  <input
+    type="text"
+    value={newName}
+    onChange={(e) => setNewName(e.target.value)}
+    className="w-full bg-base-200 border-none outline-none"
+    placeholder="Enter new name"
+  />
+  <button
+    type="submit"
+    disabled={isSubmitting}
+    className="mt-2 px-4 py-2 text-xs bg-blue-600 text-white rounded-lg disabled:bg-gray-300 transition-all hover:bg-blue-800"
+  >
+    {isSubmitting ? "Updating..." : "Update Name"}
+  </button>
+</form>
+
             </div>
 
             <div className="space-y-1.5">
