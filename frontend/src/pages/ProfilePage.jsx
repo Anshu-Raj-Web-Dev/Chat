@@ -5,6 +5,8 @@ import { Camera, Mail, User } from "lucide-react";
 const ProfilePage = () => {
   const { authUser, isUpdatingProfile, updateProfile } = useAuthStore();
   const [selectedImg, setSelectedImg] = useState(null);
+  const [newName, setNewName] = useState(authUser?.fullName || ""); // For the name update
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
@@ -40,8 +42,31 @@ const ProfilePage = () => {
     };
   };
 
+  const handleNameChange = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      await updateProfile({ fullName: newName });
+      console.log("Profile name updated successfully.");
+    } catch (error) {
+      console.error("Error updating name:", error);
+      alert("Failed to update name. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
-    <div className="h-screen pt-20">
+    <div className="h-screen pt-20 profile-page">
+       <style>
+        {`
+          @import url('https://fonts.googleapis.com/css2?family=Itim&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Parkinsans:wght@300..800&family=Playwrite+VN:wght@100..400&display=swap');        .profile-page {
+          font-family: "Montserrat", serif;
+          font-weight: 400;
+        }
+        `}
+      </style>
       <div className="max-w-2xl mx-auto p-4 py-8">
         <div className="bg-base-300 rounded-xl p-6 space-y-8">
           <div className="text-center">
@@ -83,7 +108,23 @@ const ProfilePage = () => {
                 <User className="w-4 h-4" />
                 Full Name
               </div>
-              <p className="px-4 py-2.5 bg-base-200 rounded-lg border">{authUser?.fullName}</p>
+              <form onSubmit={handleNameChange} className="px-4 py-2.5 bg-base-200 rounded-lg border">
+                <input
+                  type="text"
+                  value={newName}
+                  onChange={(e) => setNewName(e.target.value)}
+                  className="w-full bg-base-200 border-none outline-none"
+                  placeholder="Enter new name"
+                />
+                
+              </form>
+              <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="mt-2 px-4 py-2 text-xs bg-blue-600 text-white rounded-lg disabled:bg-gray-300 transition-all hover:bg-blue-800"
+                >
+                  {isSubmitting ? "Updating..." : "Update Name"}
+                </button>
             </div>
 
             <div className="space-y-1.5">
