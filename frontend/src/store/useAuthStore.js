@@ -74,18 +74,27 @@ export const useAuthStore = create((set, get) => ({
   },
 
   updateProfile: async (data) => {
-    set({ isUpdatingProfile: true });
-    try {
-      const res = await axiosInstance.put("/auth/update-profile", data);
-      set({ authUser: res.data });
-      toast.success("Profile updated successfully");
-    } catch (error) {
-      console.log("error in update profile:", error);
-      toast.error(error.response.data.message);
-    } finally {
-      set({ isUpdatingProfile: false });
+  set({ isUpdatingProfile: true });
+  try {
+    const res = await axiosInstance.put("/auth/update-profile", data);
+
+    console.log("Updated Profile Response:", res.data); // Debugging
+
+    // Extract the user object and update state
+    if (res.data && res.data.user) {
+      set((state) => ({ authUser: { ...state.authUser, ...res.data.user } }));
+    } else {
+      throw new Error("Invalid response structure");
     }
-  },
+
+    toast.success("Profile updated successfully");
+  } catch (error) {
+    console.error("Error in update profile:", error);
+    toast.error(error.response?.data?.message || "An error occurred while updating profile.");
+  } finally {
+    set({ isUpdatingProfile: false });
+  }
+},
 
   connectSocket: () => {
     const { authUser } = get();
