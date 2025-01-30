@@ -92,8 +92,12 @@ export const updateProfile = async (req, res) => {
     const userId = req.user._id;
 
     let updateData = {};
-    if (profilePic) updateData.profilePic = profilePic;
     if (fullName) updateData.fullName = fullName;
+    if (profilePic === null) {
+      updateData.profilePic = ""; // Ensure database reflects removal
+    } else if (profilePic) {
+      updateData.profilePic = profilePic;
+    }
 
     const updatedUser = await User.findByIdAndUpdate(
       userId,
@@ -101,14 +105,13 @@ export const updateProfile = async (req, res) => {
       { new: true }
     ).select("-password");
 
-    console.log("Updated User:", updatedUser); // Debugging
-
     res.status(200).json({ user: updatedUser });
   } catch (error) {
     console.error("Error in update profile:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 
 export const checkAuth = (req, res) => {
