@@ -96,6 +96,28 @@ export const useAuthStore = create((set, get) => ({
   }
 },
 
+  handleRemoveImage: async () => {
+  setIsSubmitting(true);
+
+  try {
+    const res = await updateProfile({ profilePic: null });
+
+    if (res && res.user) {
+      setSelectedImg(null);
+      useAuthStore.setState((state) => ({
+        authUser: { ...state.authUser, ...res.user },
+      }));
+    }
+
+    console.log("Profile image removed successfully.");
+  } catch (error) {
+    console.error("Error removing profile image:", error);
+    alert("Failed to remove profile image. Please try again.");
+  } finally {
+    setIsSubmitting(false);
+  }
+},
+
   connectSocket: () => {
     const { authUser } = get();
     if (!authUser || get().socket?.connected) return;
