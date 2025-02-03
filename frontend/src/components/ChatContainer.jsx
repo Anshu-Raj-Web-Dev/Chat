@@ -166,7 +166,7 @@ const ChatContainer = () => {
 
       {/* Delete Confirmation Modal */}
       {showDeleteConfirmation && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 z-20">
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 z-20 ml-1">
           <div className="bg-white p-6 rounded-lg shadow-lg w-80 text-center">
             <p className="text-lg text-black">Are you sure you want to delete this message?</p>
             <div className="mt-4 flex justify-between">
