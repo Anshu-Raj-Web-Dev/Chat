@@ -23,9 +23,62 @@ const ChatContainer = () => {
   const [showDropdown, setShowDropdown] = useState(null);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [messageToDelete, setMessageToDelete] = useState(null);
+  const lastSentMessage = [...messages].reverse().find(msg => msg.senderId === authUser._id);
+  const socket = useAuthStore.getState().socket;
 
   const buttonRefs = useRef({}); // Store refs for message buttons
   const dropdownRef = useRef(); // Dropdown menu reference
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      const lastMessage = messages[messages.length - 1];
+      if (!lastMessage.seen && lastMessage.senderId === authUser._id) {
+        useChatStore.getState().setMessageSeen(lastMessage._id);
+      }
+    }
+  }, [messages]);
+  
+  
+  useEffect(() => {
+    if (!messages.length) return;
+
+    const lastMessage = messages[messages.length - 1];
+
+    // Only the receiver should trigger the "seen" update
+    if (lastMessage.senderId !== authUser._id && !lastMessage.seen) {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting) {
+                    useChatStore.getState().setMessageSeen(lastMessage._id);
+                    observer.disconnect(); // Stop observing after marking as seen
+                }
+            },
+            { threshold: 1.0 }
+        );
+
+        if (messageEndRef.current) {
+            observer.observe(messageEndRef.current);
+        }
+
+        return () => observer.disconnect();
+    }
+}, [messages]);
+
+
+useEffect(() => {
+  socket.on("messageSeen", (messageId) => {
+      set((state) => ({
+          messages: state.messages.map((msg) =>
+              msg._id === messageId ? { ...msg, seen: true } : msg
+          ),
+      }));
+  });
+
+  return () => {
+      socket.off("messageSeen");
+  };
+}, []);
+
 
   // Close dropdown when clicked outside
   useEffect(() => {
@@ -134,6 +187,11 @@ const ChatContainer = () => {
                 )}
               </p>
 
+              {lastSentMessage?.seen && (
+      <p className="seen-status">Seen</p>
+    )}
+              
+
               {/* Dropdown Menu */}
               {message.senderId === authUser._id && (
                 <div className="absolute top-1 left-[-15px]">
@@ -155,13 +213,13 @@ const ChatContainer = () => {
 
                   {showDropdown === message._id && (
                     <div
-                      ref={dropdownRef}
-                      className="absolute right-[0] top-[-20] w-40 bg-gray-200 bg-white border border-gray-200 shadow-md rounded-lg z-10 opacity-0 transition-opacity duration-300 ease-in-out transform translate-y-2"
-                      style={{
-                        opacity: showDropdown === message._id ? 1 : 0,
-                        transform: showDropdown === message._id ? "translateY(0)" : "translateY(10px)"
-                      }}
-                    >
+                    ref={dropdownRef}
+                    className="absolute right-[0] top-[-6px] w-40 bg-white border border-gray-200 shadow-md rounded-lg z-10 opacity-0 transition-opacity duration-300 ease-in-out transform translate-y-2"
+                    style={{
+                      opacity: showDropdown === message._id ? 1 : 0,
+                      transform: showDropdown === message._id ? "translateY(-5px)" : "translateY(5px)"
+                    }}
+                  >
                       <button
                         onClick={() => handleCopy(message.text)}
                         className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
