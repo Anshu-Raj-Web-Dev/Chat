@@ -13,9 +13,9 @@
 @media (max-width: 768px) {
     .container-3{
         position: absolute;
-        top: 40px;
+        top: 70px;
         left: 1;
         width: 420px;
-        height: 800px;
+        height: 700px;
     }
 }
