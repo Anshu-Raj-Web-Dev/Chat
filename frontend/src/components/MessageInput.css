@@ -9,7 +9,7 @@
 @media (max-width: 768px) {
     .emoji-picker{
         width: 45px;
-        transform: translateX(18px);
+        transform: translateX(16px);
     }
     .typing-area{
         width: 80%;
