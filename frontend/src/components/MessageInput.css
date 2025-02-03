@@ -12,7 +12,7 @@
         transform: translateX(9px);
     }
     .typing-area{
-        width: 80%;
+        width: 65%;
         transform: translateY(10px) translateX(15px);
     }
 }
