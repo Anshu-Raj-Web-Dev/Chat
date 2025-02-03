@@ -32,3 +32,15 @@
     /* Optional: Add some subtle shadow to make it look more elegant */
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
+
+@media (max-width: 768px) {
+    .chat-container {
+        margin-left: 0;
+      padding: 10px;
+    }
+    
+    .chat-bubble {
+      max-width: 85%;
+    }
+  }
+  
