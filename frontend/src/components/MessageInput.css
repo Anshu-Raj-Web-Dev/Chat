@@ -6,6 +6,13 @@
 .typing-area input{
     color: black;
 }
-.send-btn{
-    /* padding: 10px; */
+@media (max-width: 768px) {
+    .emoji-picker{
+        width: 50px;
+        transform: translateX(9px);
+    }
+    .typing-area{
+        width: 90%;
+        transform: translateY(10px) translateX(10px);
+    }
 }
