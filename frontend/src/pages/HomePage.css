@@ -1,14 +1,21 @@
 .container{
     background: #fff;
+    position: relative;
 }
-.container-2{
-    /* background-color: #F5F7FA; */
-    /* background-color: black; */
-}
+
 .container-3{
     position: absolute;
     bottom: 0;
     height: 92%;
     width: 80%;
     right: 0;
+}
+@media (max-width: 768px) {
+    .container-3{
+        position: absolute;
+        top: 40px;
+        left: 1;
+        width: 420px;
+        height: 800px;
+    }
 }
