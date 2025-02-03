@@ -8,11 +8,11 @@
 }
 @media (max-width: 768px) {
     .emoji-picker{
-        width: 50px;
-        transform: translateX(9px);
+        width: 45px;
+        transform: translateX(20px);
     }
     .typing-area{
-        width: 65%;
-        transform: translateY(10px) translateX(15px);
+        width: 80%;
+        transform: translateY(10px) translateX(25px);
     }
 }
