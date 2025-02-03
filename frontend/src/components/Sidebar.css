@@ -21,6 +21,8 @@
       max-width: 420px;
       left: 0;
       transform: translateX(-100%);
+      margin-top: 10px;
+      height: 90%;
     }
     
     .sidebar-container.open {
