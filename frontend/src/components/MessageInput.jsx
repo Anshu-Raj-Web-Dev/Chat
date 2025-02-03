@@ -121,7 +121,7 @@ const MessageInput = () => {
           {isEmojiPickerVisible && (
             <div
               ref={emojiPickerRef}
-              className="absolute bottom-12 right-20 bg-white shadow-lg rounded-lg z-10"
+              className="w-70 absolute bottom-12 right-18 bg-white shadow-lg rounded-lg z-10"
             >
               <EmojiPicker
                 onEmojiClick={handleEmojiClick}
@@ -133,7 +133,7 @@ const MessageInput = () => {
           {/* Emoji Button */}
           <button
             type="button"
-            className="btn btn-circle bg-[#F1F3F7] text-zinc-600 transition-all duration-300 hover:text-emerald-600"
+            className="emoji-picker btn btn-circle bg-[#F1F3F7] text-zinc-600 transition-all duration-300 hover:text-emerald-600"
             onClick={() => setEmojiPickerVisible((prev) => !prev)}
           >
             <Smile size={20} />
