@@ -5,7 +5,7 @@ import MessageInput from "./MessageInput";
 import MessageSkeleton from "./skeletons/MessageSkeleton";
 import { useAuthStore } from "../store/useAuthStore";
 import { formatMessageTime } from "../lib/utils";
-import { Copy, Trash2, MoreVertical } from "lucide-react";
+import { Copy, Trash2, MoreVertical, Edit , Check , X } from "lucide-react";
 import "./ChatContainer.css";
 
 const ChatContainer = () => {
@@ -26,6 +26,8 @@ const ChatContainer = () => {
   const [messageToDelete, setMessageToDelete] = useState(null);
   const buttonRefs = useRef({}); // Store refs for message buttons
   const dropdownRef = useRef(); // Dropdown menu reference
+  const [editingMessageId, setEditingMessageId] = useState(null);
+const [editedText, setEditedText] = useState("");
 
   // Close dropdown when clicked outside
   useEffect(() => {
@@ -84,6 +86,21 @@ const ChatContainer = () => {
     setShowDropdown(null); // Close the dropdown after copying
   };
 
+  const handleEditClick = (message) => {
+    setEditingMessageId(message._id);
+    setEditedText(message.text); // Pre-fill the input with existing message
+  };
+  
+  const handleSaveEdit = async () => {
+    if (!editedText.trim()) return; // Prevent empty updates
+    await useChatStore.getState().updateMessage({ _id: editingMessageId, text: editedText });
+    setEditingMessageId(null);
+  };
+  
+  const handleCancelEdit = () => {
+    setEditingMessageId(null);
+  };
+
   if (isMessagesLoading) {
     return (
       <div className="flex-1 flex flex-col overflow-auto">
@@ -105,76 +122,82 @@ const ChatContainer = () => {
           }
         `}
       </style>
-      <div className="chat-container flex-1 flex flex-col overflow-auto bg-[#121212] p-2">
+      <div className="chat-container flex-1 flex flex-col overflow-auto bg-[#121212]  p-2">
 
       <ChatHeader />
-      <div className="flex-1 overflow-y-scroll p-4 space-y-2">
-        {messages.map((message) => (
-          <div
-            key={message._id}
-            className={`chat ${message.senderId === authUser._id ? "chat-end" : "chat-start"} transition-opacity duration-300`}
-            ref={messageEndRef}
-          >
-            <div className="text-xs opacity-90 ml-1 text-gray-400">
-              {formatMessageTime(message.createdAt)}
-            </div>
-            <div className={`chat-bubble p-3 rounded-lg shadow-sm relative border ${message.senderId === authUser._id ? "bg-[#4D416B] text-white" : "bg-[#F8F9FA] text-black border-gray-300"}`}>
-            {message.image && (
-                <img
-                  src={message.image}
-                  alt="Attachment"
-                  className="sm:max-w-[200px] rounded-md mb-2"
-                />
-              )}
-              <p className="chat-text whitespace-pre-wrap break-words">
-                {message.text}
-                {message.isEdited && (
-                  <span className="text-xs text-gray-500"> (edited)</span>
-                )}
-              </p>
-
-              {/* Dropdown Menu */}
-              {message.senderId === authUser._id && (
-                <div className="absolute top-1 left-[-15px]">
-                  <button
-                    ref={(el) => (buttonRefs.current[message._id] = el)}
-                    onClick={() => toggleDropdown(message._id)}
-                    className="text-gray-600 hover:text-gray-800 focus:outline-none"
-                  >
-                    <MoreVertical size={20} />
-                  </button>
-
-
-
-
-{showDropdown === message._id && (
-  <div
-    ref={dropdownRef}
-    className="absolute right-0 top-[-35px] mb-5 w-20 bg-white/80 backdrop-blur-md border border-gray-200 shadow-lg rounded-xl z-10 flex flex-col items-center p-1"
-  >
-    {/* Copy Button */}
-    <button
-      onClick={() => handleCopy(message.text)}
-      className="p-2 text-gray-700 hover:bg-gray-200 rounded-lg transition-all duration-200"
-    >
-      <Copy size={20} className="text-gray-600 hover:scale-110 transition-transform" />
+      <div className="flex-1 overflow-y-auto p-4 space-y-2">
+      {messages.map((message) => (
+  <div key={message._id} className={`chat ${message.senderId === authUser._id ? "chat-end" : "chat-start"} transition-opacity duration-300`} ref={messageEndRef}>
+    <div className="text-xs opacity-90 ml-1 text-gray-400">
+      {formatMessageTime(message.createdAt)}
+    </div>
+    
+    <div className={`chat-bubble p-3 rounded-lg shadow-sm relative border ${message.senderId === authUser._id ? "bg-[#4D416B] text-white" : "bg-[#F8F9FA] text-black border-gray-300"}`}>
+      
+    {editingMessageId === message._id ? (
+  <div className="flex items-center gap-2 w-full">
+    <textarea
+      value={editedText}
+      onChange={(e) => setEditedText(e.target.value)}
+      className="w-[200px] min-h-[40px] max-h-[150px] px-2 py-1 border rounded-md text-white bg-gray-800 resize-none overflow-hidden focus:outline-none"
+      style={{
+        wordWrap: "break-word",
+        whiteSpace: "pre-wrap",
+      }}
+      rows={1} // Initial row
+      autoFocus
+      ref={(el) => {
+        if (el) {
+          el.style.height = "40px"; // Reset height to prevent overflow issues
+          el.style.height = `${el.scrollHeight}px`; // Auto expand based on content
+        }
+      }}
+    />
+    <button onClick={handleSaveEdit} className="text-green-500 hover:scale-110 transition-transform">
+      <Check size={20} />
     </button>
-
-    {/* Delete Button */}
-    <button
-      onClick={() => handleDelete(message._id)}
-      className="p-2 text-red-600 hover:bg-red-200 rounded-lg transition-all duration-200"
-    >
-      <Trash2 size={20} className="text-red-500 hover:scale-110 transition-transform" />
+    <button onClick={handleCancelEdit} className="text-red-500 hover:scale-110 transition-transform">
+      <X size={20} />
     </button>
   </div>
-)}
+) : (
+  <div className="relative w-fit">
+    
+    <p className="chat-text whitespace-pre-wrap break-words">
+      {message.text}
+    </p>
+  </div>
+)
 
-                </div>
-              )}
+}
+
+      {message.senderId === authUser._id && !editingMessageId && (
+        <div className="absolute top-1 left-[-15px]">
+          <button ref={(el) => (buttonRefs.current[message._id] = el)} onClick={() => toggleDropdown(message._id)} className="text-gray-600 hover:text-gray-800 focus:outline-none">
+            <MoreVertical size={20} />
+          </button>
+
+          {showDropdown === message._id && (
+            <div ref={dropdownRef} className="absolute right-0 top-[-75px] mb-5 w-20 bg-white/80 backdrop-blur-md border border-gray-200 shadow-lg rounded-xl z-10 flex flex-col items-center p-1">
+              
+              <button onClick={() => handleEditClick(message)} className="p-2 text-gray-700 hover:bg-gray-200 rounded-lg transition-all duration-200">
+                <Edit size={20} className="text-blue-500 hover:scale-110 transition-transform" />
+              </button>
+
+              <button onClick={() => handleCopy(message.text)} className="p-2 text-gray-700 hover:bg-gray-200 rounded-lg transition-all duration-200">
+                <Copy size={20} className="text-gray-600 hover:scale-110 transition-transform" />
+              </button>
+
+              <button onClick={() => handleDelete(message._id)} className="p-2 text-red-600 hover:bg-red-200 rounded-lg transition-all duration-200">
+                <Trash2 size={20} className="text-red-500 hover:scale-110 transition-transform" />
+              </button>
             </div>
-          </div>
-        ))}
+          )}
+        </div>
+      )}
+    </div>
+  </div>
+))}
       </div>
 
       {/* Delete Confirmation Modal */}
