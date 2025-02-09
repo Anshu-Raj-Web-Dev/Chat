@@ -105,7 +105,7 @@ const ChatContainer = () => {
           }
         `}
       </style>
-      <div className="chat-container flex-1 flex flex-col overflow-auto bg-[#121212] text-white p-2">
+      <div className="chat-container flex-1 flex flex-col overflow-auto bg-[#121212] p-2">
 
       <ChatHeader />
       <div className="flex-1 overflow-y-scroll p-4 space-y-2">
