@@ -5,6 +5,7 @@ import MessageInput from "./MessageInput";
 import MessageSkeleton from "./skeletons/MessageSkeleton";
 import { useAuthStore } from "../store/useAuthStore";
 import { formatMessageTime } from "../lib/utils";
+import { Copy, Trash2, MoreVertical } from "lucide-react";
 import "./ChatContainer.css";
 
 const ChatContainer = () => {
@@ -93,8 +94,19 @@ const ChatContainer = () => {
     );
   }
 
+
   return (
-    <div className="chat-container flex-1 flex flex-col overflow-auto bg-[#FDFDFD]">
+    <>
+    <style>
+        {`
+        @import url('https://fonts.googleapis.com/css2?family=Itim&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Parkinsans:wght@300..800&family=Playwrite+VN:wght@100..400&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+          .chat-container{
+          font-family: "Parkinsans", serif;
+          }
+        `}
+      </style>
+      <div className="chat-container flex-1 flex flex-col overflow-auto bg-[#121212] text-white p-2">
+
       <ChatHeader />
       <div className="flex-1 overflow-y-auto p-4 space-y-2">
         {messages.map((message) => (
@@ -103,17 +115,11 @@ const ChatContainer = () => {
             className={`chat ${message.senderId === authUser._id ? "chat-end" : "chat-start"} transition-opacity duration-300`}
             ref={messageEndRef}
           >
-            <div className="mb-1">
-              <time className="text-xs opacity-50 ml-1 text-black">
-                {formatMessageTime(message.createdAt)}
-              </time>
+            <div className="text-xs opacity-90 ml-1 text-gray-400">
+              {formatMessageTime(message.createdAt)}
             </div>
-            <div
-              className={`chat-bubble flex flex-col rounded-lg shadow-md p-3 relative break-words ${
-                message.senderId === authUser._id ? "bg-[#4D416B] text-white" : "bg-[#F1F3F7] text-black"
-              }`}
-            >
-              {message.image && (
+            <div className={`chat-bubble p-3 rounded-lg shadow-sm relative border ${message.senderId === authUser._id ? "bg-[#4D416B] text-white" : "bg-[#F8F9FA] text-black border-gray-300"}`}>
+            {message.image && (
                 <img
                   src={message.image}
                   alt="Attachment"
@@ -135,28 +141,35 @@ const ChatContainer = () => {
                     onClick={() => toggleDropdown(message._id)}
                     className="text-gray-600 hover:text-gray-800 focus:outline-none"
                   >
-                    ...
+                    <MoreVertical size={20} />
                   </button>
 
-                  {showDropdown === message._id && (
-                    <div
-                      ref={dropdownRef}
-                      className="absolute right-[0] top-[-6px] w-40 bg-white border border-gray-200 shadow-md rounded-lg z-10"
-                    >
-                      <button
-                        onClick={() => handleCopy(message.text)}
-                        className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        Copy
-                      </button>
-                      <button
-                        onClick={() => handleDelete(message._id)}
-                        className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  )}
+
+
+
+{showDropdown === message._id && (
+  <div
+    ref={dropdownRef}
+    className="absolute right-0 top-[-35px] mb-5 w-20 bg-white/80 backdrop-blur-md border border-gray-200 shadow-lg rounded-xl z-10 flex flex-col items-center p-1"
+  >
+    {/* Copy Button */}
+    <button
+      onClick={() => handleCopy(message.text)}
+      className="p-2 text-gray-700 hover:bg-gray-200 rounded-lg transition-all duration-200"
+    >
+      <Copy size={20} className="text-gray-600 hover:scale-110 transition-transform" />
+    </button>
+
+    {/* Delete Button */}
+    <button
+      onClick={() => handleDelete(message._id)}
+      className="p-2 text-red-600 hover:bg-red-200 rounded-lg transition-all duration-200"
+    >
+      <Trash2 size={20} className="text-red-500 hover:scale-110 transition-transform" />
+    </button>
+  </div>
+)}
+
                 </div>
               )}
             </div>
@@ -166,29 +179,32 @@ const ChatContainer = () => {
 
       {/* Delete Confirmation Modal */}
       {showDeleteConfirmation && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 z-20 ml-1">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-80 text-center">
-            <p className="text-lg text-black">Are you sure you want to delete this message?</p>
-            <div className="mt-4 flex justify-between">
-              <button
-                onClick={confirmDelete}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-              >
-                Yes, Delete
-              </button>
-              <button
-                onClick={cancelDelete}
-                className="px-4 py-2 bg-gray-300 text-black rounded-lg hover:bg-gray-400"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <MessageInput />
+  <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-md z-20">
+    <div className="bg-white p-6 rounded-xl shadow-lg w-80 text-center transform transition-all scale-95">
+      <p className="text-lg font-semibold text-black">Delete this message?</p>
+      <p className="text-sm text-gray-500 mt-2">This action cannot be undone.</p>
+      <div className="mt-4 flex justify-center gap-4">
+        <button
+          onClick={confirmDelete}
+          className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all"
+        >
+          Yes, Delete
+        </button>
+        <button
+          onClick={cancelDelete}
+          className="px-4 py-2 bg-gray-300 text-black rounded-lg hover:bg-gray-400 transition-all"
+        >
+          Cancel
+        </button>
+      </div>
     </div>
+  </div>
+)}
+
+
+<MessageInput />
+    </div>
+    </>
   );
 };
 export default ChatContainer;
