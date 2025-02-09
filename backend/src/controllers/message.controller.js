@@ -72,34 +72,30 @@ export const sendMessage = async (req, res) => {
 
 export const updateMessage = async (req, res) => {
   try {
-    const { messageId } = req.params;  // Get message ID from URL params
-    const { text } = req.body;  // Get the updated text from the request body
+    const { messageId } = req.params;
+    const { text } = req.body;
 
-    // Find the message by its ID and update the text
     const updatedMessage = await Message.findByIdAndUpdate(
       messageId,
-      { text }, // Update the message text
-      { new: true } // Return the updated message
+      { text, isEdited: true },
+      { new: true }
     );
 
-    // If the message is not found, return an error
     if (!updatedMessage) {
       return res.status(404).json({ error: "Message not found" });
     }
 
-    // Emit the updated message to other connected users (optional)
     const receiverSocketId = getReceiverSocketId(updatedMessage.receiverId);
     if (receiverSocketId) {
-      io.to(receiverSocketId).emit('messageUpdated', updatedMessage);
+      io.to(receiverSocketId).emit("messageUpdated", updatedMessage);
     }
 
-    res.status(200).json(updatedMessage); // Send the updated message as response
+    res.status(200).json(updatedMessage);
   } catch (error) {
     console.error("Error in updateMessage controller:", error.message);
     res.status(500).json({ error: "Internal server error" });
   }
 };
-
 
 export const deleteMessage = async (req, res) => {
   try {
