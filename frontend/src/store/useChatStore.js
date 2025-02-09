@@ -46,19 +46,19 @@ export const useChatStore = create((set, get) => ({
     }
   },
 
-  subscribeToMessages: () => {
-    const { selectedUser } = get();
-    if (!selectedUser) return;
-
+ subscribeToMessages: () => {
     const socket = useAuthStore.getState().socket;
-
+  
     socket.on("newMessage", (newMessage) => {
-      const isMessageSentFromSelectedUser = newMessage.senderId === selectedUser._id;
-      if (!isMessageSentFromSelectedUser) return;
-
-      set({
-        messages: [...get().messages, newMessage],
-      });
+      set((state) => ({ messages: [...state.messages, newMessage] }));
+    });
+  
+    socket.on("messageUpdated", (updatedMessage) => {
+      set((state) => ({
+        messages: state.messages.map((msg) =>
+          msg._id === updatedMessage._id ? updatedMessage : msg
+        ),
+      }));
     });
   },
 
@@ -85,14 +85,19 @@ export const useChatStore = create((set, get) => ({
   updateMessage: async (message) => {
     try {
       const res = await axiosInstance.put(`/messages/update/${message._id}`, { text: message.text });
+      
       set((state) => ({
         messages: state.messages.map((msg) =>
           msg._id === message._id ? { ...msg, text: res.data.text, isEdited: true } : msg
         ),
       }));
+  
+      const socket = useAuthStore.getState().socket;
+      socket.emit("updateMessage", res.data); // Emit update to other users
+  
       toast.success("Message updated successfully.");
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Failed to update message");
     }
   },
   
