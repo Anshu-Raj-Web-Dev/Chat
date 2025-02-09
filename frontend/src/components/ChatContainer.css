@@ -1,46 +1,60 @@
-/* Custom Scrollbar Styles */
-::-webkit-scrollbar {
-    width: 8px; /* Slightly wider scrollbar */
-}
 
-::-webkit-scrollbar-track {
-    background: transparent; /* Transparent background */
-}
-
-::-webkit-scrollbar-thumb {
-    background-color: #b73d3d; /* Red thumb color */
-    border-radius: 20px;
-}
-
-/* Crystal (Frosted Glass) Effect in Chat Container */
 .chat-container {
-    margin: 10px;
-    overflow-x: hidden;
-    overflow-y: scroll; /* Enables vertical scrolling */
-    border-radius: 30px;
-    margin-left: 10px;
-    width: 98%;
-    padding-right: 10px; /* To prevent the content from being hidden behind scrollbar */
-    display: flex;
-    flex-direction: column;
-    
-    /* Crystal/Frosted glass effect */
-    background: rgba(255, 255, 255, 0.2); /* Slight transparent white background */
-    backdrop-filter: blur(10px); /* Blur effect to create the frosted glass look */
-    -webkit-backdrop-filter: blur(10px); /* Safari support */
-    
-    /* Optional: Add some subtle shadow to make it look more elegant */
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  margin: 10px;
+  overflow-x: hidden;
+  overflow-y: auto; /* Ensures scrolling is possible */
+  border-radius: 30px;
+  margin-left: 10px;
+  width: 98%;
+  padding-right: 10px;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
+
+
+.chat-container::-webkit-scrollbar {
+  width: 8px; 
+  display: block;
+  background-color: rgb(0, 0, 0);
+
+}
+
+
+.chat-container::-webkit-scrollbar-thumb {
+  /* background-color: rgba(255, 0, 0, 0.5);  */
+  border-radius: 4px;
+  background-color: rgb(0, 0, 0);
+
+}
+
+.chat-container::-webkit-scrollbar-track {
+  /* background: rgba(0, 0, 0, 0.1);  */
+  background-color: rgb(0, 0, 0);
+}
+
+.chat-bubble {
+  max-width: 500px; /* Prevents messages from stretching too wide */
+  word-wrap: break-word;
+  word-break: break-word;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  display: inline-block;
+}
+
 
 @media (max-width: 768px) {
-    .chat-container {
-        margin-left: 15px;
+  .chat-container {
+      height: 450px;
+      margin-left: 20px;
       padding: 10px;
-    }
-    
-    .chat-bubble {
-      max-width: 85%;
-    }
   }
   
+  .chat-bubble {
+      max-width: 50%;
+  }
+}
