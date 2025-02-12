@@ -132,14 +132,14 @@ const [editedText, setEditedText] = useState("");
       {formatMessageTime(message.createdAt)}
     </div>
     
-    <div className={`chat-bubble p-3 rounded-lg shadow-sm relative border ${message.senderId === authUser._id ? "bg-[#4D416B] text-white" : "bg-[#F8F9FA] text-black border-gray-300"}`}>
+    <div className={`chat-bubble p-2 rounded-lg shadow-sm relative border ${message.senderId === authUser._id ? "bg-[#4D416B] text-white" : "bg-[#F8F9FA] text-black border-gray-300"}`}>
       
     {editingMessageId === message._id ? (
   <div className="flex items-center gap-2 w-full">
     <textarea
       value={editedText}
       onChange={(e) => setEditedText(e.target.value)}
-      className="w-[200px] min-h-[40px] max-h-[150px] px-2 py-1 border rounded-md text-white bg-gray-800 resize-none overflow-hidden focus:outline-none"
+      className="w-[450px] min-h-[40px] max-h-[150px] px-2 py-1 border rounded-md text-white bg-gray-800 resize-none overflow-hidden focus:outline-none"
       style={{
         wordWrap: "break-word",
         whiteSpace: "pre-wrap",
